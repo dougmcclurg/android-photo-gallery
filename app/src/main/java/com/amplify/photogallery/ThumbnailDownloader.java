@@ -20,9 +20,20 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
     Handler mHandler;
     Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
 
+    Handler mResponseHandler;
+    Listener<Token> mListener;
 
-    public ThumbnailDownloader() {
+    public interface Listener<Token> {
+        void onThumbnailDownloaded(Token token, Bitmap thumbnail);
+    }
+
+    public void setListener(Listener<Token> listener) {
+        mListener = listener;
+    }
+
+    public ThumbnailDownloader(Handler responseHandler) {
         super(TAG);
+        mResponseHandler = responseHandler;
     }
 
     @SuppressLint("HandlerLeak")
@@ -62,8 +73,23 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
                     .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             Log.i(TAG, "Bitmap created");
 
+            mResponseHandler.post(new Runnable() {
+                public void run() {
+                    if (requestMap.get(token) != url)
+                        return;
+                    requestMap.remove(token);
+                    mListener.onThumbnailDownloaded(token, bitmap);
+                }
+            });
+
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }
     }
+
+    public void clearQueue() {
+        mHandler.removeMessages(MESSAGE_DOWNLOAD);
+        requestMap.clear();
+    }
+
 }

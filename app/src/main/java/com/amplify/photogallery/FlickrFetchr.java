@@ -20,7 +20,8 @@ public class FlickrFetchr {
     public static final String TAG = "FlickrFetchr";
     private static final String ENDPOINT = "https://api.flickr.com/services/rest/";
     private static final String API_KEY = "b932491fb6f9355623ddf61353f25f24";
-    private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
+    private static final String METHOD_GET_RECENT = "flickr.people.getPublicPhotos";
+    private static final String USER_ID = "21941708@N00";
     private static final String XML_PHOTO = "photo";
     private static final String PARAM_EXTRAS = "extras";
     private static final String EXTRA_SMALL_URL = "url_s";
@@ -56,6 +57,7 @@ public class FlickrFetchr {
         try {
             String url = Uri.parse(ENDPOINT).buildUpon()
                     .appendQueryParameter("method", METHOD_GET_RECENT)
+                    .appendQueryParameter("user_id", USER_ID)
                     .appendQueryParameter("api_key", API_KEY)
                     .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
                     .build().toString();
