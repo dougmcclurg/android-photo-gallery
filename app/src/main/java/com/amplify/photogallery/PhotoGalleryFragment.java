@@ -13,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class PhotoGalleryFragment extends Fragment {
